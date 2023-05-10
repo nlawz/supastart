@@ -9,6 +9,8 @@ import { Analytics } from "@/components/analytics"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
+import SupabaseProvider from "./supabase-provider"
+
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -82,12 +84,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
           fontHeading.variable
         )}
       >
+        <SupabaseProvider session={session}>
+        <SupabaseListener serverAccessToken={session?.access_token} />
+
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
           <Analytics />
           <Toaster />
           <TailwindIndicator />
         </ThemeProvider>
+        <SupabaseProvider />
       </body>
     </html>
   )
