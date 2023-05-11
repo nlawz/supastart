@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation"
 
-import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { getCurrentUser } from "@/lib/session"
+import {
+  createServerSupabaseClient,
+  getUserServer,
+} from "@/lib/supabase-server"
 import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { DashboardHeader } from "@/components/header"
 import { PostCreateButton } from "@/components/post-create-button"
@@ -14,26 +15,17 @@ export const metadata = {
 }
 
 export default async function DashboardPage() {
-  const user = await getCurrentUser()
+  const supabase = createServerSupabaseClient()
+  const { user } = await getUserServer()
 
   if (!user) {
-    redirect(authOptions?.pages?.signIn || "/login")
+    redirect("/login")
   }
 
-  const posts = await db.post.findMany({
-    where: {
-      authorId: user.id,
-    },
-    select: {
-      id: true,
-      title: true,
-      published: true,
-      createdAt: true,
-    },
-    orderBy: {
-      updatedAt: "desc",
-    },
-  })
+  const { data: posts } = await supabase
+    .from("posts")
+    .select("id, title, published, created_at")
+    .order("updated_at", { ascending: false })
 
   return (
     <DashboardShell>
@@ -42,7 +34,7 @@ export default async function DashboardPage() {
       </DashboardHeader>
       <div>
         {posts?.length ? (
-          <div className="divide-y divide-border rounded-md border">
+          <div className="border divide-y rounded-md divide-border">
             {posts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}

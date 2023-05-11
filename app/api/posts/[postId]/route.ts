@@ -1,8 +1,10 @@
 import { getServerSession } from "next-auth"
 import * as z from "zod"
 
-import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
+import {
+  createServerSupabaseClient,
+  getUserServer,
+} from "@/lib/supabase-server"
 import { postPatchSchema } from "@/lib/validations/post"
 
 const routeContextSchema = z.object({

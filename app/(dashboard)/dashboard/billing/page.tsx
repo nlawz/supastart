@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation"
 
-import { authOptions } from "@/lib/auth"
-import { getCurrentUser } from "@/lib/session"
 import { stripe } from "@/lib/stripe"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
+import { getUserServer } from "@/lib/supabase-server"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   Card,
@@ -23,10 +22,10 @@ export const metadata = {
 }
 
 export default async function BillingPage() {
-  const user = await getCurrentUser()
+  const { user } = await getUserServer()
 
   if (!user) {
-    redirect(authOptions?.pages?.signIn || "/login")
+    redirect("/login")
   }
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)

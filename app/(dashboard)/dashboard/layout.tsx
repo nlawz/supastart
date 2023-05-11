@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 
 import { dashboardConfig } from "@/config/dashboard"
-import { getCurrentUser } from "@/lib/session"
+import { getUserServer } from "@/lib/supabase-server"
 import { MainNav } from "@/components/main-nav"
 import { DashboardNav } from "@/components/nav"
 import { SiteFooter } from "@/components/site-footer"
@@ -14,16 +14,16 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
-  const user = await getCurrentUser()
+  const { user } = await getUserServer()
 
   if (!user) {
     return notFound()
   }
 
   return (
-    <div className="flex min-h-screen flex-col space-y-6">
+    <div className="flex flex-col min-h-screen space-y-6">
       <header className="sticky top-0 z-40 border-b bg-background">
-        <div className="container flex h-16 items-center justify-between py-4">
+        <div className="container flex items-center justify-between h-16 py-4">
           <MainNav items={dashboardConfig.mainNav} />
           <UserAccountNav
             user={{
@@ -38,7 +38,7 @@ export default async function DashboardLayout({
         <aside className="hidden w-[200px] flex-col md:flex">
           <DashboardNav items={dashboardConfig.sidebarNav} />
         </aside>
-        <main className="flex w-full flex-1 flex-col overflow-hidden">
+        <main className="flex flex-col flex-1 w-full overflow-hidden">
           {children}
         </main>
       </div>

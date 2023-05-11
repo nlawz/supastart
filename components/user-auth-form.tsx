@@ -1,119 +1,34 @@
 "use client"
 
-import * as React from "react"
-import { useSearchParams } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { signIn } from "next-auth/react"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { Auth } from "@supabase/auth-ui-react"
 
-import { cn } from "@/lib/utils"
-import { userAuthSchema } from "@/lib/validations/auth"
-import { buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { toast } from "@/components/ui/use-toast"
-import { Icons } from "@/components/icons"
+import { getURL } from "@/lib/helpers"
+import { useSupabase } from "@/app/supabase-provider"
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-type FormData = z.infer<typeof userAuthSchema>
-
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(userAuthSchema),
-  })
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false)
-  const searchParams = useSearchParams()
-
-  async function onSubmit(data: FormData) {
-    setIsLoading(true)
-
-    const signInResult = await signIn("email", {
-      email: data.email.toLowerCase(),
-      redirect: false,
-      callbackUrl: searchParams?.get("from") || "/dashboard",
-    })
-
-    setIsLoading(false)
-
-    if (!signInResult?.ok) {
-      return toast({
-        title: "Something went wrong.",
-        description: "Your sign in request failed. Please try again.",
-        variant: "destructive",
-      })
-    }
-
-    return toast({
-      title: "Check your email",
-      description: "We sent you a login link. Be sure to check your spam too.",
-    })
-  }
-
+export default function UserAuthForm() {
+  const { supabase } = useSupabase()
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-2">
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
-              Email
-            </Label>
-            <Input
-              id="email"
-              placeholder="name@example.com"
-              type="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading || isGitHubLoading}
-              {...register("email")}
-            />
-            {errors?.email && (
-              <p className="px-1 text-xs text-red-600">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-          <button className={cn(buttonVariants())} disabled={isLoading}>
-            {isLoading && (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            Sign In with Email
-          </button>
-        </div>
-      </form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
-          </span>
-        </div>
-      </div>
-      <button
-        type="button"
-        className={cn(buttonVariants({ variant: "outline" }))}
-        onClick={() => {
-          setIsGitHubLoading(true)
-          signIn("github")
+    <div className="flex flex-col space-y-4">
+      <Auth
+        supabaseClient={supabase}
+        providers={["github", "google"]}
+        redirectTo={getURL()}
+        magicLink={true}
+        appearance={{
+          className: {
+            anchor: "",
+            button:
+              "!bg-primary !text-primary-foreground hover:!bg-primary/90 !rounded-md !h-10 sm:!h-9 sm:!px-3 lg:!h-11 lg:!px-8",
+            container: " ",
+            divider: "",
+            input:
+              "!h-10 !rounded-md border !border-input !bg-transparent !px-3 !py-2 !text-sm !ring-offset-background file:!border-0 file:!bg-transparent file:!text-sm file:!font-medium placeholder:!text-muted-foreground focus-visible:!outline-none focus-visible:!ring-2 focus-visible:!ring-ring focus-visible:!ring-offset-2 disabled:!cursor-not-allowed disabled:!opacity-50",
+            label: "!mb-2 !text-xs hover:!cursor-pointer",
+            loader: "",
+            message: "",
+          },
         }}
-        disabled={isLoading || isGitHubLoading}
-      >
-        {isGitHubLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.gitHub className="mr-2 h-4 w-4" />
-        )}{" "}
-        Github
-      </button>
+      />
     </div>
   )
 }

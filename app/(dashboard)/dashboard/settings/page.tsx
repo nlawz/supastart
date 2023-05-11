@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation"
 
-import { authOptions } from "@/lib/auth"
-import { getCurrentUser } from "@/lib/session"
+import { getUserServer } from "@/lib/supabase-server"
 import { DashboardHeader } from "@/components/header"
 import { DashboardShell } from "@/components/shell"
 import { UserNameForm } from "@/components/user-name-form"
@@ -12,10 +11,10 @@ export const metadata = {
 }
 
 export default async function SettingsPage() {
-  const user = await getCurrentUser()
+  const { user } = await getUserServer()
 
   if (!user) {
-    redirect(authOptions?.pages?.signIn || "/login")
+    redirect( "/login")
   }
 
   return (
