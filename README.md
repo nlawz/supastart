@@ -32,7 +32,6 @@ A few people have asked me to turn this into a starter. I think we could do that
 - Server and Client Components
 - API Routes and Middlewares
 - Authentication using **Supabase Auth**
-- ORM using **Prisma**
 - Database on **Supabase**
 - UI Components built using **Radix UI**
 - Documentation and blog using **MDX** and **Contentlayer**

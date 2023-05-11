@@ -1,4 +1,4 @@
-import { User } from "./types"
+import { User } from "./main"
 import type { Icon } from "lucide-react"
 
 import { Icons } from "@/components/icons"

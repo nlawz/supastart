@@ -1,8 +1,11 @@
-import { getServerSession } from "next-auth/next"
+import { cookies, headers } from "next/headers"
+import {
+  createRouteHandlerSupabaseClient,
+} from "@supabase/auth-helpers-nextjs"
 import { z } from "zod"
 
+import { Database } from "@/types/db"
 import { proPlan } from "@/config/subscriptions"
-import { authOptions } from "@/lib/auth"
 import { stripe } from "@/lib/stripe"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { absoluteUrl } from "@/lib/utils"
@@ -10,8 +13,14 @@ import { absoluteUrl } from "@/lib/utils"
 const billingUrl = absoluteUrl("/dashboard/billing")
 
 export async function GET(req: Request) {
+  const supabase = createRouteHandlerSupabaseClient<Database>({
+    headers,
+    cookies,
+  })
   try {
-    const session = await getServerSession(authOptions)
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
 
     if (!session?.user || !session?.user.email) {
       return new Response(null, { status: 403 })

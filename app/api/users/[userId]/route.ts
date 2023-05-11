@@ -1,8 +1,8 @@
-import { getServerSession } from "next-auth/next"
+import { cookies, headers } from "next/headers"
+import { createRouteHandlerSupabaseClient } from "@supabase/auth-helpers-nextjs"
 import { z } from "zod"
 
-import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
+import { Database } from "@/types/db"
 import { userNameSchema } from "@/lib/validations/user"
 
 const routeContextSchema = z.object({
@@ -15,12 +15,18 @@ export async function PATCH(
   req: Request,
   context: z.infer<typeof routeContextSchema>
 ) {
+  const supabase = createRouteHandlerSupabaseClient<Database>({
+    headers,
+    cookies,
+  })
   try {
     // Validate the route context.
     const { params } = routeContextSchema.parse(context)
 
     // Ensure user is authentication and has access to this user.
-    const session = await getServerSession(authOptions)
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
     if (!session?.user || params.userId !== session?.user.id) {
       return new Response(null, { status: 403 })
     }
@@ -30,13 +36,8 @@ export async function PATCH(
     const payload = userNameSchema.parse(body)
 
     // Update the user.
-    await db.user.update({
-      where: {
-        id: session.user.id,
-      },
-      data: {
-        name: payload.name,
-      },
+    await supabase.auth.updateUser({
+      data: { full_name: payload.name },
     })
 
     return new Response(null, { status: 200 })

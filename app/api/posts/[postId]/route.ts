@@ -1,10 +1,8 @@
-import { getServerSession } from "next-auth"
+import { cookies, headers } from "next/headers"
+import { createRouteHandlerSupabaseClient } from "@supabase/auth-helpers-nextjs"
 import * as z from "zod"
 
-import {
-  createServerSupabaseClient,
-  getUserServer,
-} from "@/lib/supabase-server"
+import { Database } from "@/types/db"
 import { postPatchSchema } from "@/lib/validations/post"
 
 const routeContextSchema = z.object({
@@ -17,6 +15,10 @@ export async function DELETE(
   req: Request,
   context: z.infer<typeof routeContextSchema>
 ) {
+  const supabase = createRouteHandlerSupabaseClient<Database>({
+    headers,
+    cookies,
+  })
   try {
     // Validate the route params.
     const { params } = routeContextSchema.parse(context)
@@ -25,13 +27,8 @@ export async function DELETE(
     if (!(await verifyCurrentUserHasAccessToPost(params.postId))) {
       return new Response(null, { status: 403 })
     }
-
     // Delete the post.
-    await db.post.delete({
-      where: {
-        id: params.postId as string,
-      },
-    })
+    await supabase.from("posts").delete().eq("id", params.postId)
 
     return new Response(null, { status: 204 })
   } catch (error) {
@@ -47,6 +44,10 @@ export async function PATCH(
   req: Request,
   context: z.infer<typeof routeContextSchema>
 ) {
+  const supabase = createRouteHandlerSupabaseClient<Database>({
+    headers,
+    cookies,
+  })
   try {
     // Validate route params.
     const { params } = routeContextSchema.parse(context)
@@ -62,15 +63,14 @@ export async function PATCH(
 
     // Update the post.
     // TODO: Implement sanitization for content.
-    await db.post.update({
-      where: {
-        id: params.postId,
-      },
-      data: {
+    await supabase
+      .from("posts")
+      .update({
         title: body.title,
         content: body.content,
-      },
-    })
+      })
+      .eq("id", params.postId)
+      .select()
 
     return new Response(null, { status: 200 })
   } catch (error) {
@@ -83,13 +83,19 @@ export async function PATCH(
 }
 
 async function verifyCurrentUserHasAccessToPost(postId: string) {
-  const session = await getServerSession(authOptions)
-  const count = await db.post.count({
-    where: {
-      id: postId,
-      authorId: session?.user.id,
-    },
+  const supabase = createRouteHandlerSupabaseClient<Database>({
+    headers,
+    cookies,
   })
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
 
-  return count > 0
+  const { count } = await supabase
+    .from("posts")
+    .select("*", { count: "exact", head: true })
+    .eq("id", postId)
+    .eq("author_id", session?.user.id)
+
+  return count ? count > 0 : false
 }

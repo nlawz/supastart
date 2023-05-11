@@ -1,31 +1,31 @@
 import { redirect } from "next/navigation"
 
-import {
-  createServerSupabaseClient,
-  getUserServer,
-} from "@/lib/supabase-server"
 import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { DashboardHeader } from "@/components/header"
 import { PostCreateButton } from "@/components/post-create-button"
 import { PostItem } from "@/components/post-item"
 import { DashboardShell } from "@/components/shell"
+import { createServerSupabaseClient, getUser } from "@/app/supabase-server"
 
 export const metadata = {
   title: "Dashboard",
 }
 
 export default async function DashboardPage() {
-  const supabase = createServerSupabaseClient()
-  const { user } = await getUserServer()
+  const user = await getUser()
 
   if (!user) {
     redirect("/login")
   }
 
+  const supabase = createServerSupabaseClient()
+
   const { data: posts } = await supabase
     .from("posts")
     .select("id, title, published, created_at")
     .order("updated_at", { ascending: false })
+
+  console.log(posts)
 
   return (
     <DashboardShell>
