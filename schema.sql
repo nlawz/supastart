@@ -30,7 +30,7 @@ create function public.handle_new_user()
 returns trigger as $$
 begin
   insert into public.users (id, email, name, image, created_at)
-  values (new.id, new.raw_user_meta_data->>'email', new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url', new.created_at);
+  values (new.id, new.email, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url', new.created_at);
   return new;
 end;
 $$ language plpgsql security definer;
@@ -46,7 +46,7 @@ create function public.update_user_verification_and_timestamp()
 returns trigger as $$
 begin
   update public.users 
-  set email_verified = new.email_verified, updated_at = new.updated_at 
+  set email_verified = new.email_confirmed_at, updated_at = new.updated_at 
   where id = new.id;
   return new;
 end;
@@ -75,3 +75,4 @@ create policy "Anyone can read posts." on posts for select using (true);
 create policy "Authorized users can insert posts." on posts for insert to authenticated with check (true);
 create policy "Users update own posts." on posts for update using (auth.uid() = author_id);
 create policy "Users delete own posts." on posts for delete using (auth.uid() = author_id);
+

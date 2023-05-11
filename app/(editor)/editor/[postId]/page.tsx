@@ -1,18 +1,21 @@
 import { notFound, redirect } from "next/navigation"
-import { Post, User } from "@prisma/client"
 
-import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { getCurrentUser } from "@/lib/session"
+import { Post, User } from "@/types/types"
+import {
+  createServerSupabaseClient,
+  getUserServer,
+} from "@/lib/supabase-server"
 import { Editor } from "@/components/editor"
 
 async function getPostForUser(postId: Post["id"], userId: User["id"]) {
-  return await db.post.findFirst({
-    where: {
-      id: postId,
-      authorId: userId,
-    },
-  })
+  const supabase = createServerSupabaseClient()
+  const { data } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("id", postId)
+    .eq("author_id", userId)
+    .single()
+  return data
 }
 
 interface EditorPageProps {
@@ -20,10 +23,10 @@ interface EditorPageProps {
 }
 
 export default async function EditorPage({ params }: EditorPageProps) {
-  const user = await getCurrentUser()
+  const { user } = await getUserServer()
 
   if (!user) {
-    redirect(authOptions?.pages?.signIn || "/login")
+    redirect("/login")
   }
 
   const post = await getPostForUser(params.postId, user.id)
