@@ -66,7 +66,7 @@ export async function POST(req: Request) {
           subscription.current_period_end * 1000
         ).toISOString(),
       })
-      .eq("stripeSubscriptionId", subscription.id)
+      .eq("stripe_subscription_id", subscription.id)
   }
 
   return new Response(null, { status: 200 })

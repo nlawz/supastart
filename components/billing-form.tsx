@@ -80,7 +80,7 @@ export function BillingForm({
               {subscriptionPlan.isCanceled
                 ? "Your plan will be canceled on "
                 : "Your plan renews on "}
-              {formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.
+              {formatDate(subscriptionPlan.stripe_current_period_end)}.
             </p>
           ) : null}
         </CardFooter>

@@ -2,7 +2,7 @@
 
 import { Auth } from "@supabase/auth-ui-react"
 
-import { getURL } from "@/lib/helpers"
+import { getURL } from "@/lib/utils"
 import { useSupabase } from "@/app/supabase-provider"
 
 export default function UserAuthForm() {

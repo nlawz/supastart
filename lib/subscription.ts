@@ -15,15 +15,15 @@ export async function getUserSubscriptionPlan(
 
   // Check if user is on a pro plan.
   const isPro =
-    user.stripePriceId &&
-    user.stripeCurrentPeriodEnd?.getTime() + 86_400_000 > Date.now()
+    user.stripe_price_id &&
+    user.stripe_current_period_end?.getTime() + 86_400_000 > Date.now()
 
   const plan = isPro ? proPlan : freePlan
 
   return {
     ...plan,
     ...user,
-    stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd?.getTime(),
+    stripe_current_period_end: user.stripe_current_period_end?.getTime(),
     isPro,
   }
 }

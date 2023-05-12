@@ -30,9 +30,9 @@ export async function GET(req: Request) {
 
     // The user is on the pro plan.
     // Create a portal session to manage subscription.
-    if (subscriptionPlan.isPro && subscriptionPlan.stripeCustomerId) {
+    if (subscriptionPlan.isPro && subscriptionPlan.stripe_customer_id) {
       const stripeSession = await stripe.billingPortal.sessions.create({
-        customer: subscriptionPlan.stripeCustomerId,
+        customer: subscriptionPlan.stripe_customer_id,
         return_url: billingUrl,
       })
 
@@ -50,7 +50,7 @@ export async function GET(req: Request) {
       customer_email: session.user.email,
       line_items: [
         {
-          price: proPlan.stripePriceId,
+          price: proPlan.stripe_price_id,
           quantity: 1,
         },
       ],
