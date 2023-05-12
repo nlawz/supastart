@@ -1,13 +1,18 @@
-import { headers } from "next/headers"
+import { cookies, headers } from "next/headers"
+import { createRouteHandlerSupabaseClient } from "@supabase/auth-helpers-nextjs"
 import Stripe from "stripe"
 
 import { env } from "@/env.mjs"
-import { db } from "@/lib/db"
+import { Database } from "@/types/db"
 import { stripe } from "@/lib/stripe"
 
 export async function POST(req: Request) {
   const body = await req.text()
   const signature = headers().get("Stripe-Signature") as string
+  const supabase = createRouteHandlerSupabaseClient<Database>({
+    headers,
+    cookies,
+  })
 
   let event: Stripe.Event
 
@@ -32,19 +37,18 @@ export async function POST(req: Request) {
     // Update the user stripe into in our database.
     // Since this is the initial subscription, we need to update
     // the subscription id and customer id.
-    await db.user.update({
-      where: {
-        id: session?.metadata?.userId,
-      },
-      data: {
-        stripeSubscriptionId: subscription.id,
-        stripeCustomerId: subscription.customer as string,
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
+
+    await supabase
+      .from("users")
+      .update({
+        stripe_customer_id: subscription.id,
+        stripe_subscription_id: subscription.customer as string,
+        stripe_price_id: subscription.items.data[0].price.id,
+        stripe_current_period_end: new Date(
           subscription.current_period_end * 1000
-        ),
-      },
-    })
+        ).toISOString(),
+      })
+      .eq("id", session?.metadata?.userId)
   }
 
   if (event.type === "invoice.payment_succeeded") {
@@ -54,17 +58,15 @@ export async function POST(req: Request) {
     )
 
     // Update the price id and set the new period end.
-    await db.user.update({
-      where: {
-        stripeSubscriptionId: subscription.id,
-      },
-      data: {
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
+    await supabase
+      .from("users")
+      .update({
+        stripe_price_id: subscription.items.data[0].price.id,
+        stripe_current_period_end: new Date(
           subscription.current_period_end * 1000
-        ),
-      },
-    })
+        ).toISOString(),
+      })
+      .eq("stripeSubscriptionId", subscription.id)
   }
 
   return new Response(null, { status: 200 })

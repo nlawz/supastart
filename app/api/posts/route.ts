@@ -1,10 +1,11 @@
-import { getServerSession } from "next-auth/next"
+import { cookies, headers } from "next/headers"
+import { createRouteHandlerSupabaseClient } from "@supabase/auth-helpers-nextjs"
 import * as z from "zod"
 
-import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
+import { Database } from "@/types/db"
 import { RequiresProPlanError } from "@/lib/exceptions"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
+import { getPostsInfo } from "@/app/supabase-server"
 
 const postCreateSchema = z.object({
   title: z.string(),
@@ -12,25 +13,21 @@ const postCreateSchema = z.object({
 })
 
 export async function GET() {
+  const supabase = createRouteHandlerSupabaseClient<Database>({
+    headers,
+    cookies,
+  })
   try {
-    const session = await getServerSession(authOptions)
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
 
     if (!session) {
       return new Response("Unauthorized", { status: 403 })
     }
 
-    const { user } = session
-    const posts = await db.post.findMany({
-      select: {
-        id: true,
-        title: true,
-        published: true,
-        createdAt: true,
-      },
-      where: {
-        authorId: user.id,
-      },
-    })
+    const user = session.user
+    const posts = getPostsInfo()
 
     return new Response(JSON.stringify(posts))
   } catch (error) {
@@ -39,8 +36,14 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const supabase = createRouteHandlerSupabaseClient<Database>({
+    headers,
+    cookies,
+  })
   try {
-    const session = await getServerSession(authOptions)
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
 
     if (!session) {
       return new Response("Unauthorized", { status: 403 })
@@ -52,13 +55,12 @@ export async function POST(req: Request) {
     // If user is on a free plan.
     // Check if user has reached limit of 3 posts.
     if (!subscriptionPlan?.isPro) {
-      const count = await db.post.count({
-        where: {
-          authorId: user.id,
-        },
-      })
+      const { count } = await supabase
+        .from("posts")
+        .select("*", { count: "exact", head: true })
+        .eq("authorId", user.id)
 
-      if (count >= 3) {
+      if (count && count >= 3) {
         throw new RequiresProPlanError()
       }
     }
@@ -66,16 +68,14 @@ export async function POST(req: Request) {
     const json = await req.json()
     const body = postCreateSchema.parse(json)
 
-    const post = await db.post.create({
-      data: {
+    const { data: post } = await supabase
+      .from("posts")
+      .insert({
         title: body.title,
         content: body.content,
-        authorId: session.user.id,
-      },
-      select: {
-        id: true,
-      },
-    })
+        author_id: session.user.id,
+      })
+      .select()
 
     return new Response(JSON.stringify(post))
   } catch (error) {

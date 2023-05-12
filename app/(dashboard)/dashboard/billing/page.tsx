@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 
 import { stripe } from "@/lib/stripe"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
-import { getUserServer } from "@/lib/supabase-server"
+import { getUser } from "@/app/supabase-server"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   Card,
@@ -22,7 +22,7 @@ export const metadata = {
 }
 
 export default async function BillingPage() {
-  const { user } = await getUserServer()
+  const user = await getUser()
 
   if (!user) {
     redirect("/login")

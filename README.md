@@ -1,6 +1,6 @@
-# Taxonomy
+# Taxonomy + Supabase
 
-An open source application built using the new router, server components and everything new in Next.js 13.
+A clone of @shadcn's open source application built using the new router, server components, and everything new in Next.js 13, but with Supabase as the backend/auth solution. This project will be kept up to date with the main project as an alternative option to PlanetScale/Next Auth. The below is the README from the main project.
 
 > **Warning**
 > This app is a work in progress. I'm building this in public. You can follow the progress on Twitter [@shadcn](https://twitter.com/shadcn).
@@ -32,7 +32,6 @@ A few people have asked me to turn this into a starter. I think we could do that
 - Server and Client Components
 - API Routes and Middlewares
 - Authentication using **Supabase Auth**
-- ORM using **Prisma**
 - Database on **Supabase**
 - UI Components built using **Radix UI**
 - Documentation and blog using **MDX** and **Contentlayer**
@@ -72,6 +71,10 @@ If you have some suggestions, feel free to create an issue.
 ```sh
 pnpm install
 ```
+
+2. Create a Supabase project and copy the environmental variables into `.env`. You can follow the [official docs](https://supabase.io/docs/guides/with-nextjs) to get started.
+
+3. Copy the `schema.sql` file from the root of this project into your Supabase project and run it to create the tables.
 
 2. Copy `.env.example` to `.env.local` and update the variables.
 

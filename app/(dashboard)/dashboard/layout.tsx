@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation"
 
 import { dashboardConfig } from "@/config/dashboard"
-import { getUserServer } from "@/lib/supabase-server"
 import { MainNav } from "@/components/main-nav"
 import { DashboardNav } from "@/components/nav"
 import { SiteFooter } from "@/components/site-footer"
 import { UserAccountNav } from "@/components/user-account-nav"
+import { getUser } from "@/app/supabase-server"
 
 interface DashboardLayoutProps {
   children?: React.ReactNode
@@ -14,8 +14,8 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
-  const { user } = await getUserServer()
-
+  const user = await getUser()
+  console.log(user)
   if (!user) {
     return notFound()
   }

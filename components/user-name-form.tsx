@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { User } from "@prisma/client"
+import { User } from "@/types/main"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -110,7 +110,7 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
             disabled={isSaving}
           >
             {isSaving && (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              <Icons.spinner className="w-4 h-4 mr-2 animate-spin" />
             )}
             <span>Save</span>
           </button>
