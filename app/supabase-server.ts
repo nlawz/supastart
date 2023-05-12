@@ -2,7 +2,7 @@ import { cookies, headers } from "next/headers"
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs"
 
 import { Database } from "@/types/db"
-import { Post } from "@/types/main"
+import { Post, User } from "@/types/main"
 
 export const createServerSupabaseClient = () =>
   createServerComponentSupabaseClient<Database>({
@@ -53,7 +53,7 @@ export async function getUserSubscription() {
     const { data } = await supabase
       .from("users")
       .select(
-        "stripeSubscriptionId, stripeCurrentPeriodEnd, stripeCustomerId, stripePriceId"
+        "stripe_subscription_id, stripe_current_period_end, stripe_customer_id, stripe_price_id"
       )
       .single()
     return data
@@ -85,5 +85,5 @@ export async function getPostForUser(postId: Post["id"], userId: User["id"]) {
     .eq("id", postId)
     .eq("author_id", userId)
     .single()
-  return data
+  return data? { ...data, content: data.content as unknown as JSON } : null
 }

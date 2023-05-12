@@ -1,23 +1,15 @@
-import { redirect } from "next/navigation"
-
 import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { DashboardHeader } from "@/components/header"
 import { PostCreateButton } from "@/components/post-create-button"
 import { PostItem } from "@/components/post-item"
 import { DashboardShell } from "@/components/shell"
-import { createServerSupabaseClient, getUser } from "@/app/supabase-server"
+import { createServerSupabaseClient } from "@/app/supabase-server"
 
 export const metadata = {
   title: "Dashboard",
 }
 
 export default async function DashboardPage() {
-  const user = await getUser()
-
-  if (!user) {
-    redirect("/login")
-  }
-
   const supabase = createServerSupabaseClient()
 
   const { data: posts } = await supabase
@@ -34,7 +26,7 @@ export default async function DashboardPage() {
       </DashboardHeader>
       <div>
         {posts?.length ? (
-          <div className="border divide-y rounded-md divide-border">
+          <div className="divide-y divide-border rounded-md border">
             {posts.map((post) => (
               <PostItem key={post.id} post={post} />
             ))}

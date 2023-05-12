@@ -72,17 +72,16 @@ If you have some suggestions, feel free to create an issue.
 pnpm install
 ```
 
-2. Create a Supabase project and copy the environmental variables into `.env`. You can follow the [official docs](https://supabase.io/docs/guides/with-nextjs) to get started.
-
-3. Copy the `schema.sql` file from the root of this project into your Supabase project and run it to create the tables.
-
 2. Copy `.env.example` to `.env.local` and update the variables.
-
-```sh
+```
 cp .env.example .env.local
 ```
 
-3. Start the development server:
+3. Create a Supabase project and copy the environmental variables into `.env.local`. You can follow the [official docs](https://supabase.io/docs/guides/with-nextjs) to get started.
+
+4. Copy the `schema.sql` file from the root of this project into your Supabase project's SQL editor and run it to create the tables.
+
+5. Start the development server:
 
 ```sh
 pnpm dev

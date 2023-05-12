@@ -10,7 +10,7 @@ export interface PageMeta {
 
 export interface User {
   created_at: string | null
-  email: string | null
+  email: string | null | undefined
   email_verified: string | null
   id: string
   image: string | null

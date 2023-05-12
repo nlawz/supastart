@@ -1,11 +1,11 @@
-import { notFound } from "next/navigation"
+import { redirect } from "next/navigation"
 
 import { dashboardConfig } from "@/config/dashboard"
 import { MainNav } from "@/components/main-nav"
 import { DashboardNav } from "@/components/nav"
 import { SiteFooter } from "@/components/site-footer"
 import { UserAccountNav } from "@/components/user-account-nav"
-import { getUser } from "@/app/supabase-server"
+import { getAuthUser } from "@/app/supabase-server"
 
 interface DashboardLayoutProps {
   children?: React.ReactNode
@@ -14,21 +14,21 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
-  const user = await getUser()
-  console.log(user)
+  const user = await getAuthUser()
+
   if (!user) {
-    return notFound()
+    redirect("/login")
   }
 
   return (
-    <div className="flex flex-col min-h-screen space-y-6">
+    <div className="flex min-h-screen flex-col space-y-6">
       <header className="sticky top-0 z-40 border-b bg-background">
-        <div className="container flex items-center justify-between h-16 py-4">
+        <div className="container flex h-16 items-center justify-between py-4">
           <MainNav items={dashboardConfig.mainNav} />
           <UserAccountNav
             user={{
-              name: user.name,
-              image: user.image,
+              name: user.user_metadata.full_name,
+              image: user.user_metadata.avatar_url,
               email: user.email,
             }}
           />
@@ -38,7 +38,7 @@ export default async function DashboardLayout({
         <aside className="hidden w-[200px] flex-col md:flex">
           <DashboardNav items={dashboardConfig.sidebarNav} />
         </aside>
-        <main className="flex flex-col flex-1 w-full overflow-hidden">
+        <main className="flex w-full flex-1 flex-col overflow-hidden">
           {children}
         </main>
       </div>
