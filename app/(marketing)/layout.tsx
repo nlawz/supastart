@@ -6,6 +6,8 @@ import { buttonVariants } from "@/components/ui/button"
 import { MainNav } from "@/components/main-nav"
 import { SiteFooter } from "@/components/site-footer"
 
+import { getUser } from "../supabase-server"
+
 interface MarketingLayoutProps {
   children: React.ReactNode
 }
@@ -13,20 +15,21 @@ interface MarketingLayoutProps {
 export default async function MarketingLayout({
   children,
 }: MarketingLayoutProps) {
+  const user = await getUser()
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex flex-col min-h-screen">
       <header className="container z-40 bg-background">
-        <div className="flex h-20 items-center justify-between py-6">
+        <div className="flex items-center justify-between h-20 py-6">
           <MainNav items={marketingConfig.mainNav} />
           <nav>
             <Link
-              href="/login"
+              href={user ? "/dashboard" : "/login"}
               className={cn(
                 buttonVariants({ variant: "secondary", size: "sm" }),
                 "px-4"
               )}
             >
-              Login
+              {user ? "Dashboard" : "Login"}
             </Link>
           </nav>
         </div>
