@@ -2,13 +2,19 @@
 // TODO: Fix this when we turn strict mode on.
 import { UserSubscriptionPlan } from "types"
 import { freePlan, proPlan } from "@/config/subscriptions"
-import { getUserSubscription } from "@/app/supabase-server"
+import { createServerSupabaseClient } from "@/app/supabase-server"
 
 export async function getUserSubscriptionPlan(
   userId: string
 ): Promise<UserSubscriptionPlan> {
-  const user = getUserSubscription()
-
+  const supabase = createServerSupabaseClient()
+  const { data: user } = await supabase
+    .from("users")
+    .select(
+      "stripe_subscription_id, stripe_current_period_end, stripe_customer_id, stripe_price_id"
+    )
+    .eq("id", userId)
+    .single()
   if (!user) {
     throw new Error("User not found")
   }

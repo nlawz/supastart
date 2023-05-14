@@ -5,7 +5,6 @@ import * as z from "zod"
 import { Database } from "@/types/db"
 import { RequiresProPlanError } from "@/lib/exceptions"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
-import { getPostsInfo } from "@/app/supabase-server"
 
 const postCreateSchema = z.object({
   title: z.string(),
@@ -26,8 +25,11 @@ export async function GET() {
       return new Response("Unauthorized", { status: 403 })
     }
 
-    const user = session.user
-    const posts = getPostsInfo()
+    const { data: posts } = await supabase
+      .from("posts")
+      .select("id, title, published, created_at")
+      .eq("author_id", session.user.id)
+      .order("updated_at", { ascending: false })
 
     return new Response(JSON.stringify(posts))
   } catch (error) {
@@ -58,7 +60,7 @@ export async function POST(req: Request) {
       const { count } = await supabase
         .from("posts")
         .select("*", { count: "exact", head: true })
-        .eq("authorId", user.id)
+        .eq("author_id)", user.id)
 
       if (count && count >= 3) {
         throw new RequiresProPlanError()

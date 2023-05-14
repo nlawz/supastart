@@ -1,7 +1,5 @@
 import { cookies, headers } from "next/headers"
-import {
-  createRouteHandlerSupabaseClient,
-} from "@supabase/auth-helpers-nextjs"
+import { createRouteHandlerSupabaseClient } from "@supabase/auth-helpers-nextjs"
 import { z } from "zod"
 
 import { Database } from "@/types/db"
@@ -17,6 +15,7 @@ export async function GET(req: Request) {
     headers,
     cookies,
   })
+
   try {
     const {
       data: { session },
@@ -65,6 +64,6 @@ export async function GET(req: Request) {
       return new Response(JSON.stringify(error.issues), { status: 422 })
     }
 
-    return new Response(null, { status: 500 })
+    return new Response(error, { status: 500 })
   }
 }
