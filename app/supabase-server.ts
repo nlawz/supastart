@@ -47,36 +47,6 @@ export async function getUser() {
   }
 }
 
-export async function getUserSubscription() {
-  const supabase = createServerSupabaseClient()
-  try {
-    const { data } = await supabase
-      .from("users")
-      .select(
-        "stripe_subscription_id, stripe_current_period_end, stripe_customer_id, stripe_price_id"
-      )
-      .single()
-    return data
-  } catch (error) {
-    console.error("Error:", error)
-    return null
-  }
-}
-
-export async function getPostsInfo() {
-  const supabase = createServerSupabaseClient()
-  try {
-    const { data } = await supabase
-      .from("posts")
-      .select("id, title, published, created_at")
-      .order("updated_at", { ascending: false })
-    return data
-  } catch (error) {
-    console.error("Error:", error)
-    return null
-  }
-}
-
 export async function getPostForUser(postId: Post["id"], userId: User["id"]) {
   const supabase = createServerSupabaseClient()
   const { data } = await supabase
