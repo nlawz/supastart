@@ -1,5 +1,5 @@
-import { cookies, headers } from "next/headers"
-import { createRouteHandlerSupabaseClient } from "@supabase/auth-helpers-nextjs"
+import { cookies } from "next/headers"
+import { createRouteHandlerClient  } from "@supabase/auth-helpers-nextjs"
 import { z } from "zod"
 
 import { Database } from "@/types/db"
@@ -15,8 +15,7 @@ export async function PATCH(
   req: Request,
   context: z.infer<typeof routeContextSchema>
 ) {
-  const supabase = createRouteHandlerSupabaseClient<Database>({
-    headers,
+  const supabase = createRouteHandlerClient <Database>({
     cookies,
   })
   try {

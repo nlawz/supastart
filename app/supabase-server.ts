@@ -1,14 +1,13 @@
-import { cookies, headers } from "next/headers"
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs"
+import { cache } from "react"
+import { cookies } from "next/headers"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 
 import { Database } from "@/types/db"
 import { Post, User } from "@/types/main"
 
-export const createServerSupabaseClient = () =>
-  createServerComponentSupabaseClient<Database>({
-    headers,
-    cookies,
-  })
+export const createServerSupabaseClient = cache(() =>
+  createServerComponentClient<Database>({ cookies })
+)
 
 export async function getSupabaseSession() {
   const supabase = createServerSupabaseClient()
@@ -55,5 +54,5 @@ export async function getPostForUser(postId: Post["id"], userId: User["id"]) {
     .eq("id", postId)
     .eq("author_id", userId)
     .single()
-  return data? { ...data, content: data.content as unknown as JSON } : null
+  return data ? { ...data, content: data.content as unknown as JSON } : null
 }

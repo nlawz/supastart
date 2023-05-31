@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import UserAuthForm from "@/components/user-auth-form"
+import { getAuthUser } from "@/app/supabase-server"
 
 export const metadata: Metadata = {
   title: "Login",
@@ -13,6 +14,12 @@ export const metadata: Metadata = {
 }
 
 export default async function LoginPage() {
+  const user = await getAuthUser()
+
+  if (user) {
+    redirect("/dashboard")
+  }
+
   return (
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
       <Link

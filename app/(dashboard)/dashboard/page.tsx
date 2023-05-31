@@ -17,8 +17,6 @@ export default async function DashboardPage() {
     .select("id, title, published, created_at")
     .order("updated_at", { ascending: false })
 
-  console.log(posts)
-
   return (
     <DashboardShell>
       <DashboardHeader heading="Posts" text="Create and manage posts.">

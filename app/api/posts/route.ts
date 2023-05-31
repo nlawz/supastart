@@ -1,5 +1,5 @@
-import { cookies, headers } from "next/headers"
-import { createRouteHandlerSupabaseClient } from "@supabase/auth-helpers-nextjs"
+import { cookies } from "next/headers"
+import { createRouteHandlerClient  } from "@supabase/auth-helpers-nextjs"
 import * as z from "zod"
 
 import { Database } from "@/types/db"
@@ -12,8 +12,7 @@ const postCreateSchema = z.object({
 })
 
 export async function GET() {
-  const supabase = createRouteHandlerSupabaseClient<Database>({
-    headers,
+  const supabase = createRouteHandlerClient <Database>({
     cookies,
   })
   try {
@@ -38,8 +37,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const supabase = createRouteHandlerSupabaseClient<Database>({
-    headers,
+  const supabase = createRouteHandlerClient <Database>({
     cookies,
   })
   try {
