@@ -133,7 +133,7 @@ dependencies:
     version: 0.1.8(@supabase/supabase-js@2.39.2)
   '@supabase/supabase-js':
     specifier: ^2.24.0
-    version: 2.39.2
+    version: 2.39.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
   '@t3-oss/env-nextjs':
     specifier: ^0.4.0
     version: 0.4.1(typescript@5.0.4)(zod@3.22.4)
@@ -146,6 +146,9 @@ dependencies:
   '@vercel/og':
     specifier: ^0.5.6
     version: 0.5.20
+  bufferutil:
+    specifier: ^4.0.8
+    version: 4.0.8
   class-variance-authority:
     specifier: ^0.6.0
     version: 0.6.1
@@ -221,6 +224,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.5
     version: 1.0.7(tailwindcss@3.4.0)
+  utf-8-validate:
+    specifier: ^6.0.3
+    version: 6.0.3
   zod:
     specifier: ^3.21.4
     version: 3.22.4
@@ -3308,7 +3314,7 @@ packages:
       '@supabase/supabase-js': ^2.19.0
     dependencies:
       '@supabase/auth-helpers-shared': 0.4.1(@supabase/supabase-js@2.39.2)
-      '@supabase/supabase-js': 2.39.2
+      '@supabase/supabase-js': 2.39.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
       set-cookie-parser: 2.6.0
     dev: false
 
@@ -3317,7 +3323,7 @@ packages:
     peerDependencies:
       '@supabase/supabase-js': ^2.19.0
     dependencies:
-      '@supabase/supabase-js': 2.39.2
+      '@supabase/supabase-js': 2.39.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
       jose: 4.15.4
     dev: false
 
@@ -3328,7 +3334,7 @@ packages:
     dependencies:
       '@stitches/core': 1.2.8
       '@supabase/auth-ui-shared': 0.1.8(@supabase/supabase-js@2.39.2)
-      '@supabase/supabase-js': 2.39.2
+      '@supabase/supabase-js': 2.39.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -3339,7 +3345,7 @@ packages:
     peerDependencies:
       '@supabase/supabase-js': ^2.21.0
     dependencies:
-      '@supabase/supabase-js': 2.39.2
+      '@supabase/supabase-js': 2.39.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     dev: false
 
   /@supabase/functions-js@2.1.5:
@@ -3367,12 +3373,12 @@ packages:
       '@supabase/node-fetch': 2.6.15
     dev: false
 
-  /@supabase/realtime-js@2.9.1:
+  /@supabase/realtime-js@2.9.1(bufferutil@4.0.8)(utf-8-validate@6.0.3):
     resolution: {integrity: sha512-OxmY2qj+y6+KI4ifTL92j5+WYP+u5/PdThlYxVb0GMcMiMHfA7yIku9yaQNC5/oRdIvhuRpTMG/8/R40eB+8pA==}
     dependencies:
       '@supabase/node-fetch': 2.6.15
       '@types/phoenix': 1.6.4
-      ws: 8.16.0
+      ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -3384,14 +3390,14 @@ packages:
       '@supabase/node-fetch': 2.6.15
     dev: false
 
-  /@supabase/supabase-js@2.39.2:
+  /@supabase/supabase-js@2.39.2(bufferutil@4.0.8)(utf-8-validate@6.0.3):
     resolution: {integrity: sha512-P+raK0epLef7x/s4MOUx6/TM2DX2UqMwbQXcV8PKYBX6xvX/zXARzakHsBrL/W5mA52S1vsRZjR8l7HhEPKmqA==}
     dependencies:
       '@supabase/functions-js': 2.1.5
       '@supabase/gotrue-js': 2.62.0
       '@supabase/node-fetch': 2.6.15
       '@supabase/postgrest-js': 1.9.1
-      '@supabase/realtime-js': 2.9.1
+      '@supabase/realtime-js': 2.9.1(bufferutil@4.0.8)(utf-8-validate@6.0.3)
       '@supabase/storage-js': 2.5.5
     transitivePeerDependencies:
       - bufferutil
@@ -3969,6 +3975,14 @@ packages:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
+    dev: false
+
+  /bufferutil@4.0.8:
+    resolution: {integrity: sha512-4T53u4PdgsXqKaIctwF8ifXlRTTmEPJ8iEPWFdGZvcf7sbwYo6FKFEX9eNNAnzFZ7EzJAQ3CJeOtCRA4rDp7Pw==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.7.1
     dev: false
 
   /busboy@1.6.0:
@@ -6984,6 +6998,11 @@ packages:
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
 
+  /node-gyp-build@4.7.1:
+    resolution: {integrity: sha512-wTSrZ+8lsRRa3I3H8Xr65dLWSgCvY2l4AOnaeKdPA9TB/WYMPaTcrzf3rXvFoVvjKNVnu0CcWSx54qq9GKRUYg==}
+    hasBin: true
+    dev: false
+
   /node-releases@2.0.14:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
 
@@ -8860,6 +8879,14 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /utf-8-validate@6.0.3:
+    resolution: {integrity: sha512-uIuGf9TWQ/y+0Lp+KGZCMuJWc3N9BHA+l/UmHd/oUHwJJDeysyTRxNQVkbzsIWfGFbRe3OcgML/i0mvVRPOyDA==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.7.1
+    dev: false
+
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -9014,7 +9041,7 @@ packages:
       signal-exit: 4.1.0
     dev: true
 
-  /ws@8.16.0:
+  /ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3):
     resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -9025,6 +9052,9 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dependencies:
+      bufferutil: 4.0.8
+      utf-8-validate: 6.0.3
     dev: false
 
   /y18n@5.0.8:
