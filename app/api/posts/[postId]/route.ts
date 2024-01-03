@@ -88,6 +88,11 @@ async function verifyCurrentUserHasAccessToPost(postId: string) {
     data: { session },
   } = await supabase.auth.getSession()
 
+   // Check if session or user id is undefined
+  if (!session?.user?.id) {
+    return false
+  }
+
   const { count } = await supabase
     .from("posts")
     .select("*", { count: "exact", head: true })
