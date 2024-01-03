@@ -10,7 +10,7 @@ export const createServerSupabaseClient = cache(() =>
 )
 
 export async function getSupabaseSession() {
-  const supabase = createServerSupabaseClient()
+    const supabase = createServerSupabaseClient()
   try {
     const {
       data: { session },
@@ -20,7 +20,8 @@ export async function getSupabaseSession() {
     console.error("Error:", error)
     return null
   }
-}
+  }
+
 
 export async function getAuthUser() {
   const supabase = createServerSupabaseClient()
