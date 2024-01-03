@@ -1,10 +1,16 @@
-import { cookies, headers } from "next/headers"
-import { createRouteHandlerClient  } from "@supabase/auth-helpers-nextjs"
-import Stripe from "stripe"
+import { cookies, headers } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import Stripe from "stripe";
 
-import { env } from "@/env.mjs"
-import { Database } from "@/types/db"
-import { stripe } from "@/lib/stripe"
+
+
+import { env } from "@/env.mjs";
+import { Database } from "@/types/db";
+import { stripe } from "@/lib/stripe";
+
+
+
+
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -37,6 +43,11 @@ export async function POST(req: Request) {
     // Since this is the initial subscription, we need to update
     // the subscription id and customer id.
 
+    const userId = session?.metadata?.userId
+    if (!userId) {
+      return false
+    }
+
     await supabase
       .from("users")
       .update({
@@ -47,7 +58,7 @@ export async function POST(req: Request) {
           subscription.current_period_end * 1000
         ).toISOString(),
       })
-      .eq("id", session?.metadata?.userId)
+      .eq("id", userId)
   }
 
   if (event.type === "invoice.payment_succeeded") {
