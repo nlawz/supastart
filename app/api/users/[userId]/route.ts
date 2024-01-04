@@ -1,9 +1,15 @@
-import { cookies } from "next/headers"
-import { createRouteHandlerClient  } from "@supabase/auth-helpers-nextjs"
-import { z } from "zod"
+import { cookies } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { z } from "zod";
 
-import { Database } from "@/types/db"
-import { userNameSchema } from "@/lib/validations/user"
+
+
+import { Database } from "@/types/db";
+import { userNameSchema } from "@/lib/validations/user";
+
+
+
+
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -15,8 +21,9 @@ export async function PATCH(
   req: Request,
   context: z.infer<typeof routeContextSchema>
 ) {
-  const supabase = createRouteHandlerClient <Database>({
-    cookies,
+  const cookieStore = cookies()
+  const supabase = createRouteHandlerClient<Database>({
+    cookies: () => cookieStore,
   })
   try {
     // Validate the route context.

@@ -1,10 +1,16 @@
-import { cookies } from "next/headers"
-import { createRouteHandlerClient  } from "@supabase/auth-helpers-nextjs"
-import * as z from "zod"
+import { cookies } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import * as z from "zod";
 
-import { Database } from "@/types/db"
-import { RequiresProPlanError } from "@/lib/exceptions"
-import { getUserSubscriptionPlan } from "@/lib/subscription"
+
+
+import { Database } from "@/types/db";
+import { RequiresProPlanError } from "@/lib/exceptions";
+import { getUserSubscriptionPlan } from "@/lib/subscription";
+
+
+
+
 
 const postCreateSchema = z.object({
   title: z.string(),
@@ -12,8 +18,9 @@ const postCreateSchema = z.object({
 })
 
 export async function GET() {
-  const supabase = createRouteHandlerClient <Database>({
-    cookies,
+  const cookieStore = cookies()
+  const supabase = createRouteHandlerClient<Database>({
+    cookies: () => cookieStore,
   })
   try {
     const {

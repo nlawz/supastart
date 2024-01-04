@@ -15,9 +15,10 @@ import { stripe } from "@/lib/stripe";
 export async function POST(req: Request) {
   const body = await req.text()
   const signature = headers().get("Stripe-Signature") as string
-  const supabase = createRouteHandlerClient <Database>({
-    cookies,
-  })
+   const cookieStore = cookies()
+   const supabase = createRouteHandlerClient<Database>({
+     cookies: () => cookieStore,
+   })
 
   let event: Stripe.Event
 

@@ -1,18 +1,25 @@
-import { cookies } from "next/headers"
-import { createRouteHandlerClient  } from "@supabase/auth-helpers-nextjs"
-import { z } from "zod"
+import { cookies } from "next/headers";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { z } from "zod";
 
-import { Database } from "@/types/db"
-import { proPlan } from "@/config/subscriptions"
-import { stripe } from "@/lib/stripe"
-import { getUserSubscriptionPlan } from "@/lib/subscription"
-import { absoluteUrl } from "@/lib/utils"
+
+
+import { Database } from "@/types/db";
+import { proPlan } from "@/config/subscriptions";
+import { stripe } from "@/lib/stripe";
+import { getUserSubscriptionPlan } from "@/lib/subscription";
+import { absoluteUrl } from "@/lib/utils";
+
+
+
+
 
 const billingUrl = absoluteUrl("/dashboard/billing")
 
 export async function GET(req: Request) {
-  const supabase = createRouteHandlerClient <Database>({
-    cookies,
+  const cookieStore = cookies()
+  const supabase = createRouteHandlerClient<Database>({
+    cookies: () => cookieStore,
   })
 
   try {
