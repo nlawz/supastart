@@ -8,9 +8,6 @@ import { Database } from "@/types/db";
 import { postPatchSchema } from "@/lib/validations/post";
 
 
-
-
-
 const routeContextSchema = z.object({
   params: z.object({
     postId: z.string(),

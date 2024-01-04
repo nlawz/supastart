@@ -1,23 +1,16 @@
 import { cookies, headers } from "next/headers";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import Stripe from "stripe";
-
-
-
 import { env } from "@/env.mjs";
 import { Database } from "@/types/db";
 import { stripe } from "@/lib/stripe";
-
-
-
-
 
 export async function POST(req: Request) {
   const body = await req.text()
   const signature = headers().get("Stripe-Signature") as string
    const cookieStore = cookies()
    const supabase = createRouteHandlerClient<Database>({
-     cookies: () => cookieStore,
+     cookies: () => cookieStore
    })
 
   let event: Stripe.Event
