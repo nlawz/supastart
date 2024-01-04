@@ -1,6 +1,9 @@
-# Taxonomy + Supabase
+# Supastarter
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fn0lawz%2Fsupastart&env=NEXT_PUBLIC_APP_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_SUPABASE_URL,STRIPE_API_KEY,STRIPE_WEBHOOK_SECRET,STRIPE_PRO_MONTHLY_PLAN_ID,GITHUB_ACCESS_TOKEN&project-name=supastart&repository-name=supastart&demo-title=Supastart&demo-url=https%3A%2F%2Fstarter-dev-cats.vercel.app)
 
-A clone of @shadcn's open source application built using the new router, server components, and everything new in Next.js 13, but with Supabase as the backend/auth solution. This project will be kept up to date with the main project as an alternative option to PlanetScale/Next Auth. The below is the README from the main project.
+## Taxonomy + Supabase
+
+A clone of @shadcn's open source application built using the new router, server components, and everything new in Next.js 13, but with Supabase as the backend/auth solution. It is a bit outdated currently, and I am working on getting it up to date with the official Taxonomy repo.
 
 > **Warning**
 > This app is a work in progress. I'm building this in public. You can follow the progress on Twitter [@shadcn](https://twitter.com/shadcn).
@@ -8,11 +11,11 @@ A clone of @shadcn's open source application built using the new router, server 
 
 ## About this project
 
-This project as an experiment to see how a modern app (with features like authentication, subscriptions, API routes, static pages for docs ...etc) would work in Next.js 13 and server components.
 
-**This is not a starter template.**
+**This is a starter template in progress.**
 
-A few people have asked me to turn this into a starter. I think we could do that once the new features are out of beta.
+
+
 
 ## Note on Performance
 
