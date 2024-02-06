@@ -1,10 +1,17 @@
-"use client"
+"use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { Auth } from "@supabase/auth-ui-react"
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Auth } from "@supabase/auth-ui-react";
 
-import { Database } from "@/types/db"
-import { getURL } from "@/lib/utils"
+
+
+
+import { Database } from "@/types/db";
+import { getURL } from "@/lib/utils";
+
+
 
 export default function UserAuthForm() {
   const supabase = createClientComponentClient<Database>()
