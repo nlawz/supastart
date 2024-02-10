@@ -50,7 +50,7 @@ const features = [
 async function getGitHubStars(): Promise<string | null> {
   try {
     const response = await fetch(
-      "https://api.github.com/repos/dalkommatt/taxonomy-supabase",
+      "https://api.github.com/repos/n0lawz/supastart",
       {
         headers: {
           Accept: "application/vnd.github+json",
